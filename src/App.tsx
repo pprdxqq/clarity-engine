@@ -62,7 +62,7 @@ function HomePage() {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       gsap.to('.hero-orb', { yPercent: 18, scale: 1.12, rotate: 7, ease: 'none', scrollTrigger: { trigger: '.home-hero', start: 'top top', end: 'bottom top', scrub: true } });
       gsap.to('.hero-copy', { y: 75, opacity: 0.24, ease: 'none', scrollTrigger: { trigger: '.home-hero', start: 'top top', end: 'bottom top', scrub: true } });
-      gsap.fromTo('.home-reveal', { y: 28, opacity: 0 }, { y: 0, opacity: 1, stagger: .12, duration: .7, scrollTrigger: { trigger: '.home-reveal-zone', start: 'top 75%' } });
+      gsap.fromTo('.home-reveal-zone > *', { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: .1, duration: .65, ease: 'power2.out', scrollTrigger: { trigger: '.home-reveal-zone', start: 'top 78%', once: true } });
     });
     return () => ctx.revert();
   }, []);
@@ -70,9 +70,23 @@ function HomePage() {
   return <main className="page home-page">
     <section className="home-hero">
       <div className="hero-grain"/>
-      <div className="hero-copy"><p className="eyebrow"><span className="status-dot"/> A practice space for clearer AI conversations</p><h1>Ask with<br/>more <em>intention.</em></h1><p className="hero-intro">A good prompt is more than clever wording. Learn how context, direction, and a little iteration can turn a vague ask into useful work.</p><div className="hero-actions"><Link className="button bright" to="/practice">Build a better prompt <ArrowRight size={16}/></Link><Link className="hero-text-link" to="/method">See the method <ArrowDown size={14}/></Link></div></div>
+      <div className="hero-copy"><p className="eyebrow"><span className="status-dot"/> A practical tool for getting more useful results from AI</p><h1>Turn vague asks<br/>into <em>clear prompts.</em></h1><p className="hero-intro">Clarity Engine helps you explain what you need, add the details AI is missing, and build a clearer instruction. Learn the method, explore examples, or improve a prompt of your own.</p><div className="hero-actions"><Link className="button bright" to="/practice">Build a better prompt <ArrowRight size={16}/></Link><Link className="hero-text-link" to="/method">See the method <ArrowDown size={14}/></Link></div></div>
       <div className="hero-art prompt-art" aria-hidden="true"><div className="orbit orbit-a"/><div className="orbit orbit-b"/><div className="hero-orb"><div className="orb-core"/><span className="orb-line"/><span className="orb-line second"/></div><div className="hero-label label-top">INTENT → CONTEXT</div><div className="hero-label label-bottom">A BETTER QUESTION</div><span className="spark spark-a">✳</span><span className="spark spark-b">✳</span><div className="prompt-chip chip-one">“Make it clearer”</div><div className="prompt-chip chip-two">“For whom?”</div></div>
       <div className="hero-bottom"><span>LESS GUESSING / MORE SIGNAL</span><a href="#reveal" aria-label="Scroll to explore"><ArrowDown size={16}/></a><span>SCROLL TO EXPLORE</span></div><div className="hero-index">CE—01</div>
+    </section>
+    <section className="context-bridge" aria-labelledby="context-bridge-title">
+      <div className="context-bridge-intro">
+        <p className="eyebrow">SO, WHAT IS CLARITY ENGINE?</p>
+        <h2 id="context-bridge-title">A practical way to<br/><em>get your point across.</em></h2>
+        <p>It is a free prompt-learning workshop. You bring an idea or a rough instruction; Clarity Engine helps you spot what is missing and shape it into something more useful.</p>
+        <p className="context-privacy"><Check size={14}/> Your draft stays in this browser. The current workshop uses a transparent checklist—not an AI rewrite service.</p>
+      </div>
+      <div className="context-steps" aria-label="How Clarity Engine works">
+        <article><span>01</span><div><h3>Describe the task</h3><p>Start with what you want help with, even if it is messy.</p></div></article>
+        <article><span>02</span><div><h3>Add the missing details</h3><p>Clarify context, audience, format, and boundaries that matter.</p></div></article>
+        <article><span>03</span><div><h3>Build a clearer prompt</h3><p>Review the signals, create a structured version, then copy it into the AI tool you use.</p></div></article>
+        <Link className="context-try-link" to="/practice">Try it with your own prompt <ArrowRight size={15}/></Link>
+      </div>
     </section>
     <section className="home-reveal scene" id="reveal"><div className="reveal-backdrop" aria-hidden="true"><div className="sun-disc"/><div className="horizon-line"/><div className="orbit-word">BETTER INPUT, BETTER COLLABORATION</div></div><div className="home-reveal-zone"><p className="eyebrow home-reveal">THE PROMPT IS THE START OF THE CONVERSATION</p><h2 className="home-reveal">Less “guess what<br/>I mean.” More<br/><em>let’s make this.</em></h2><p className="home-reveal reveal-note">Give the model a destination, the useful details, and a shape for the answer. Then refine what comes back.</p><Link className="text-link home-reveal" to="/method">Explore the Clarity Loop <ArrowRight size={15}/></Link></div><div className="reveal-side">A skill you can<br/>practice anywhere</div></section>
     <section className="home-example scene"><div className="home-example-heading"><p className="eyebrow">WATCH A PROMPT GET CLEARER</p><h2>Small details.<br/><em>Different result.</em></h2><p>Move from a broad request to a brief the model can actually work with.</p></div><div className="compare-stage"><article className="compare-card rough"><span className="compare-label"><i/> THE FIRST ASK</span><p>“Write a post about our event.”</p><small>It has a topic, but no audience, purpose, or shape.</small></article><div className="compare-arrow"><span><ArrowRight size={18}/></span><b>ADD THE MISSING SIGNAL</b></div><article className="compare-card clear"><span className="compare-label"><i/> WITH INTENTION</span><p>“Write a friendly Instagram caption inviting local families to our Saturday repair café. Mention free entry, repairs for small household items, and the 10–2 time. Keep it under 80 words and end with a clear invitation.”</p><small>Same idea. A destination, context, and constraints.</small><button onClick={() => tryPrompt('Write a post about our event.')}>Try improving this prompt <ArrowUpRight size={14}/></button></article></div></section>
