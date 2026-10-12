@@ -60,13 +60,22 @@ function HomePage() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      gsap.to('.hero-orb', { yPercent: 34, xPercent: -5, scale: 1.16, rotate: 12, ease: 'none', scrollTrigger: { trigger: '.home-hero', start: 'top top', end: 'bottom top', scrub: 0.7, invalidateOnRefresh: true } });
-      gsap.to('.hero-art', { yPercent: 20, ease: 'none', scrollTrigger: { trigger: '.home-hero', start: 'top top', end: 'bottom top', scrub: 0.7, invalidateOnRefresh: true } });
-      gsap.to('.hero-copy', { y: -42, opacity: 0.78, ease: 'none', scrollTrigger: { trigger: '.home-hero', start: 'top top', end: 'bottom top', scrub: 0.7, invalidateOnRefresh: true } });
-      gsap.fromTo('.home-reveal-item', { y: 26, opacity: 0 }, { y: 0, opacity: 1, stagger: .12, duration: .65, ease: 'power2.out', scrollTrigger: { trigger: '.home-reveal', start: 'top 72%', once: true } });
-      gsap.to('.sun-disc', { yPercent: -24, xPercent: -9, scale: 1.12, ease: 'none', scrollTrigger: { trigger: '.home-reveal', start: 'top bottom', end: 'bottom top', scrub: 0.8, invalidateOnRefresh: true } });
-      gsap.to('.horizon-line', { xPercent: -10, rotate: -7, ease: 'none', scrollTrigger: { trigger: '.home-reveal', start: 'top bottom', end: 'bottom top', scrub: 0.8, invalidateOnRefresh: true } });
-      gsap.to('.reveal-side', { y: -65, ease: 'none', scrollTrigger: { trigger: '.home-reveal', start: 'top bottom', end: 'bottom top', scrub: 0.8, invalidateOnRefresh: true } });
+      const mobile = window.matchMedia('(max-width: 650px)').matches;
+      // Deliberately different travel speeds create visible depth, not just entrance fades.
+      gsap.to('.hero-orb', { yPercent: mobile ? 105 : 58, xPercent: mobile ? -12 : -5, scale: mobile ? 1.3 : 1.16, rotate: 16, ease: 'none', scrollTrigger: { trigger: '.home-hero', start: 'top top', end: 'bottom top', scrub: 0.45, invalidateOnRefresh: true } });
+      gsap.to('.hero-art', { yPercent: mobile ? 42 : 28, ease: 'none', scrollTrigger: { trigger: '.home-hero', start: 'top top', end: 'bottom top', scrub: 0.45, invalidateOnRefresh: true } });
+      gsap.to('.hero-copy', { y: mobile ? -100 : -70, opacity: mobile ? 0.35 : 0.6, ease: 'none', scrollTrigger: { trigger: '.home-hero', start: 'top top', end: 'bottom top', scrub: 0.45, invalidateOnRefresh: true } });
+      gsap.fromTo('.home-reveal-item', { y: 34, opacity: 0 }, { y: 0, opacity: 1, stagger: .12, duration: .65, ease: 'power2.out', scrollTrigger: { trigger: '.home-reveal', start: 'top 72%', once: true } });
+      gsap.to('.sun-disc', { yPercent: mobile ? -82 : -48, xPercent: mobile ? -18 : -9, scale: mobile ? 1.28 : 1.12, ease: 'none', scrollTrigger: { trigger: '.home-reveal', start: 'top bottom', end: 'bottom top', scrub: 0.45, invalidateOnRefresh: true } });
+      gsap.to('.horizon-line', { xPercent: mobile ? 22 : -10, yPercent: mobile ? -35 : 0, rotate: -7, ease: 'none', scrollTrigger: { trigger: '.home-reveal', start: 'top bottom', end: 'bottom top', scrub: 0.45, invalidateOnRefresh: true } });
+      gsap.to('.reveal-side', { y: mobile ? -120 : -65, ease: 'none', scrollTrigger: { trigger: '.home-reveal', start: 'top bottom', end: 'bottom top', scrub: 0.45, invalidateOnRefresh: true } });
+      gsap.to('.context-bridge-intro', { yPercent: mobile ? -16 : -10, ease: 'none', scrollTrigger: { trigger: '.context-bridge', start: 'top bottom', end: 'bottom top', scrub: 0.5, invalidateOnRefresh: true } });
+      gsap.to('.context-steps', { yPercent: mobile ? 12 : 7, ease: 'none', scrollTrigger: { trigger: '.context-bridge', start: 'top bottom', end: 'bottom top', scrub: 0.5, invalidateOnRefresh: true } });
+      gsap.to('.home-example-heading', { yPercent: -20, ease: 'none', scrollTrigger: { trigger: '.home-example', start: 'top bottom', end: 'bottom top', scrub: 0.5, invalidateOnRefresh: true } });
+      gsap.fromTo('.compare-card.rough', { x: mobile ? -36 : -70, rotate: mobile ? -2 : -3, opacity: .55 }, { x: 0, rotate: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '.home-example', start: 'top 85%', end: 'center center', scrub: 0.5, invalidateOnRefresh: true } });
+      gsap.fromTo('.compare-card.clear', { x: mobile ? 36 : 70, rotate: mobile ? 2 : 3, opacity: .55 }, { x: 0, rotate: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '.home-example', start: 'top 75%', end: 'center center', scrub: 0.5, invalidateOnRefresh: true } });
+      gsap.to('.closing-art', { yPercent: mobile ? -32 : -22, rotate: mobile ? 7 : 4, ease: 'none', scrollTrigger: { trigger: '.home-cta', start: 'top bottom', end: 'bottom top', scrub: 0.5, invalidateOnRefresh: true } });
+      ScrollTrigger.refresh();
     });
     return () => ctx.revert();
   }, []);
