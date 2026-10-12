@@ -19,3 +19,7 @@ npm test
 ```
 
 The interface is built with React, TypeScript, Vite, and GSAP ScrollTrigger. Its guidance engine runs locally in the browser; it does not send your answers to a server. Motion follows scroll position on desktop and simplifies for touch and reduced-motion preferences.
+
+## GitHub Pages
+
+The `Deploy to GitHub Pages` workflow builds the Vite app and publishes its `dist` output whenever `main` changes. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. The Vite base path is set for `https://pprdxqq.github.io/clarity-engine/`.
