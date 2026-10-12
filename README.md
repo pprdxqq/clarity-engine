@@ -1,6 +1,8 @@
 # Clarity Engine
 
-A guided, rule-based problem-solving experience. It helps you name the problem, understand its impact, identify the kind of knot you are facing, and leave with a small next step you can actually try.
+Clarity Engine helps people write better prompts and understand why they work. Learn the Clarity Loop, study examples, and use the prompt workshop to review a rough ask and build a clearer version from your own details.
+
+The workshop runs locally in the browser with a transparent rule-based checklist and builder. It does not send prompts to an AI service or save them to a server.
 
 ## Run locally
 
@@ -18,8 +20,6 @@ npm run build
 npm test
 ```
 
-The interface is built with React, TypeScript, Vite, and GSAP ScrollTrigger. Its guidance engine runs locally in the browser; it does not send your answers to a server. Motion follows scroll position on desktop and simplifies for touch and reduced-motion preferences.
-
 ## GitHub Pages
 
-The `Deploy to GitHub Pages` workflow builds the Vite app and publishes its `dist` output whenever `main` changes. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. The Vite base path is set for `https://pprdxqq.github.io/clarity-engine/`.
+The `Deploy to GitHub Pages` workflow builds and publishes the Vite app on pushes to `main`. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. The Vite base path is set for `https://pprdxqq.github.io/clarity-engine/`, and the build includes a 404 fallback so direct links to each page continue to work.

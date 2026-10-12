@@ -1,23 +1,51 @@
-export type ProblemKind = 'decision' | 'overwhelm' | 'people' | 'stuck';
-export type ClarityInput = { problem: string; kind: ProblemKind; impact: string; control: string };
-export type Guidance = { frame: string; experiment: string; firstStep: string; avoid: string };
-
-const guidance: Record<ProblemKind, Omit<Guidance, 'frame'>> = {
-  decision: { experiment: 'Set a decision date and compare only the two most viable options against what matters most.', firstStep: 'Write down the one criterion that would make this decision feel right six months from now.', avoid: 'Waiting for perfect certainty. Look for enough evidence to choose, not proof that risk is gone.' },
-  overwhelm: { experiment: 'Reduce the active list to one must-do, one could-do, and everything that can wait.', firstStep: 'Choose one task that takes less than 15 minutes and define what “done” looks like.', avoid: 'Treating every open loop as equally urgent. Triage before you push harder.' },
-  people: { experiment: 'Have one specific, low-stakes conversation focused on observable behavior and a clear request.', firstStep: 'Draft one sentence that names what happened and one sentence that says what you need next.', avoid: 'Guessing at motives. Start with what you saw, then ask how the other person sees it.' },
-  stuck: { experiment: 'Run a small reversible test that gives you new information within the next week.', firstStep: 'Name the smallest action that could prove or disprove your current assumption.', avoid: 'Solving the whole future at once. A useful experiment beats another round of rumination.' },
+export type OutputStyle = 'clear' | 'warm' | 'bold' | 'playful';
+export type PromptDetails = {
+  goal: string;
+  context: string;
+  audience: string;
+  format: string;
+  constraints: string;
+  voice: OutputStyle;
 };
 
-export function createGuidance(input: ClarityInput): Guidance {
-  const detail = input.problem.trim();
-  const frames: Record<ProblemKind, string> = {
-    decision: `This is a choice between paths, not a test of whether you can predict the future${detail ? `: “${detail}”` : ''}.`,
-    overwhelm: `This looks like a capacity and sequencing problem${detail ? ` around “${detail}”` : ''}, not a personal failure.`,
-    people: `There is a relationship or expectation to clarify${detail ? ` in “${detail}”` : ''}; focus on the part you can communicate.`,
-    stuck: `You need better information before a big commitment${detail ? ` on “${detail}”` : ''}; make the next move a test.`,
-  };
-  const next = guidance[input.kind];
-  const controlNote = input.control === 'little' ? ' Keep the experiment within your control and make the ask or boundary explicit.' : '';
-  return { frame: frames[input.kind], experiment: next.experiment + controlNote, firstStep: next.firstStep, avoid: next.avoid };
+export type PromptCheck = {
+  label: string;
+  present: boolean;
+  tip: string;
+};
+
+const voiceGuide: Record<OutputStyle, string> = {
+  clear: 'Use plain, direct language. Keep the tone thoughtful and easy to follow.',
+  warm: 'Use a warm, human tone. Sound supportive without becoming overly familiar.',
+  bold: 'Use confident, decisive language. Keep claims grounded and specific.',
+  playful: 'Use a light, lively tone. Keep the ideas useful and the humor gentle.',
+};
+
+export function reviewPrompt(prompt: string): PromptCheck[] {
+  const text = prompt.trim();
+  return [
+    { label: 'Clear goal', present: text.length >= 18 && /\b(write|create|explain|summari[sz]e|plan|compare|draft|help|make|analy[sz]e|teach|generate|design|review|translate|brainstorm|solve)\b/i.test(text), tip: 'Start with an action and say what you want the model to make or do.' },
+    { label: 'Useful context', present: text.length >= 90 || /\b(for|because|context|background|about|working with|I am|we are)\b/i.test(text), tip: 'Add the background the model would need if it knew nothing about your situation.' },
+    { label: 'Audience or point of view', present: /\b(for|audience|reader|customer|beginner|expert|team|student|client|as a|from the perspective)\b/i.test(text), tip: 'Name who this is for or what role the model should take.' },
+    { label: 'Shape of the answer', present: /\b(list|table|bullet|paragraph|email|outline|steps|format|JSON|script|checklist|one-page|one page)\b/i.test(text), tip: 'Specify the format, length, or structure that would make the answer useful.' },
+    { label: 'Boundaries', present: /\b(don.t|do not|avoid|under|at most|no more than|must|include|exclude|limit|within)\b/i.test(text), tip: 'Set a boundary: what to include, avoid, or keep within a limit.' },
+  ];
+}
+
+export function buildPrompt(details: PromptDetails): string {
+  const sections = [
+    `## Goal\n${details.goal.trim() || '[State the specific task and desired result]'}`,
+    details.context.trim() && `## Context\n${details.context.trim()}`,
+    details.audience.trim() && `## Audience or perspective\n${details.audience.trim()}`,
+    `## Direction\n${voiceGuide[details.voice]}`,
+    details.constraints.trim() && `## Boundaries\n${details.constraints.trim()}`,
+    `## Output\n${details.format.trim() || '[Describe the format, length, and structure you want]'}`,
+    'If something important is unclear, ask up to two focused questions before answering. Do not invent facts or requirements that I have not provided.',
+  ].filter(Boolean);
+  return sections.join('\n\n');
+}
+
+export function getPromptScore(prompt: string): number {
+  const checks = reviewPrompt(prompt);
+  return Math.round((checks.filter(check => check.present).length / checks.length) * 100);
 }

@@ -1,14 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { createGuidance } from './engine';
+import { buildPrompt, getPromptScore, reviewPrompt } from './engine';
 
-describe('createGuidance', () => {
-  it('creates a specific decision frame and practical action', () => {
-    const result = createGuidance({ problem: 'whether to change jobs', kind: 'decision', impact: 'high', control: 'some' });
-    expect(result.frame).toContain('whether to change jobs');
-    expect(result.firstStep).toContain('criterion');
+describe('prompt coaching', () => {
+  it('recognizes useful signals in a specific prompt', () => {
+    const prompt = 'Write a friendly email for new club members. Keep it under 150 words and include a clear RSVP action.';
+    const checks = reviewPrompt(prompt);
+    expect(checks.find(item => item.label === 'Clear goal')?.present).toBe(true);
+    expect(checks.find(item => item.label === 'Audience or point of view')?.present).toBe(true);
+    expect(getPromptScore(prompt)).toBeGreaterThan(40);
   });
-  it('accounts for low control without abandoning agency', () => {
-    const result = createGuidance({ problem: '', kind: 'people', impact: 'medium', control: 'little' });
-    expect(result.experiment).toContain('within your control');
+
+  it('composes a prompt from the learner’s own details', () => {
+    const prompt = buildPrompt({ goal: 'Draft an event invite', context: 'A free neighborhood repair café', audience: 'Local families', format: 'Instagram caption under 80 words', constraints: 'Mention Saturday, 10–2; avoid jargon', voice: 'warm' });
+    expect(prompt).toContain('Draft an event invite');
+    expect(prompt).toContain('Local families');
+    expect(prompt).toContain('Instagram caption under 80 words');
+    expect(prompt).toContain('warm, human tone');
+    expect(prompt).toContain('ask up to two focused questions');
   });
 });
